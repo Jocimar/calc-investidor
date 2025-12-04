@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid } from 'recharts';
-import { CalculatorLayout, Sidebar, ContentArea, Input, Button, ResultBox } from '../ui/Shared';
+import { CalculatorLayout, Sidebar, ContentArea, Input, Button, ResultBox, ResponsiveAdBlock } from '../ui/Shared';
 import * as MathUtils from '../../utils/financialMath';
 
 interface Props {
@@ -229,6 +229,7 @@ export const PercentageCalculators: React.FC<Props> = ({ onBack }) => {
         </div>
       </Sidebar>
       <ContentArea>
+        <ResponsiveAdBlock />
         {renderResults()}
       </ContentArea>
     </CalculatorLayout>

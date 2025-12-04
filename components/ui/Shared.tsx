@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+
+import React, { useEffect, useState, useRef } from 'react';
 import { ArrowLeft } from 'lucide-react';
 
 interface CardProps {
@@ -43,23 +44,87 @@ export const AdPlaceholder: React.FC<AdProps> = ({
   responsive = "true",
   style = { display: 'block', width: '100%' }
 }) => {
+  const adRef = useRef<HTMLModElement>(null);
+
   useEffect(() => {
-    try {
-      // @ts-ignore
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      console.error("AdSense Error:", e);
-    }
+    // Check if element is visible and has width before requesting ad
+    // This prevents "No slot size for availableWidth=0" error
+    const attemptLoad = () => {
+       if (adRef.current && adRef.current.offsetWidth > 0) {
+          try {
+            // @ts-ignore
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
+          } catch (e) {
+            console.error("AdSense Error:", e);
+          }
+       }
+    };
+
+    // Add a delay to ensure the container has a calculated width
+    const timer = setTimeout(attemptLoad, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <div className={`flex items-center justify-center bg-slate-50 overflow-hidden ${className}`}>
-      <ins className="adsbygoogle"
+      <ins ref={adRef}
+           className="adsbygoogle"
            style={style}
            data-ad-client="ca-pub-2924325515288163"
            data-ad-slot={slot}
            data-ad-format={format}
            data-full-width-responsive={responsive}></ins>
+    </div>
+  );
+};
+
+export const ResponsiveAdBlock: React.FC = () => {
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    // Use matchMedia to detect desktop size (md breakpoint is usually 768px in tailwind)
+    const media = window.matchMedia("(min-width: 768px)");
+    
+    // Set initial state
+    setIsDesktop(media.matches);
+
+    // Listener for resize
+    const listener = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    media.addEventListener("change", listener);
+    
+    return () => media.removeEventListener("change", listener);
+  }, []);
+
+  if (!mounted) return <div className="w-full h-[90px] bg-slate-50/50" />;
+
+  return (
+    <div className="w-full my-6 flex justify-center items-center bg-slate-50/50 border border-slate-100 rounded-lg py-4 overflow-hidden">
+      {isDesktop ? (
+        /* Desktop: Fixed 728x90 */
+        <div className="w-[728px] h-[90px] bg-white shadow-sm flex items-center justify-center mx-auto">
+             <AdPlaceholder 
+                key="desktop-ad"
+                slot="9775572766" 
+                style={{ display: 'inline-block', width: '728px', height: '90px' }}
+                format=""
+                responsive="false"
+             />
+        </div>
+      ) : (
+        /* Mobile: Rectangle */
+        <div className="w-full px-4 flex justify-center">
+           <AdPlaceholder 
+              key="mobile-ad"
+              slot="3124751542" 
+              format="rectangle" 
+              responsive="true"
+              style={{ display: 'block', width: '100%', minHeight: '250px' }}
+           />
+        </div>
+      )}
     </div>
   );
 };
@@ -81,7 +146,7 @@ export const CalculatorLayout: React.FC<{
         <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
       </div>
       <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
-        <div className="flex flex-col lg:flex-row min-h-[600px]">
+        <div className="flex flex-col xl:flex-row min-h-[600px]">
           {children}
         </div>
       </div>
@@ -90,21 +155,16 @@ export const CalculatorLayout: React.FC<{
 };
 
 export const Sidebar: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div className="w-full lg:w-1/3 bg-slate-50 p-6 lg:p-8 border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col justify-between">
+  <div className="w-full xl:w-[400px] flex-shrink-0 bg-slate-50 p-6 lg:p-8 border-b xl:border-b-0 xl:border-r border-slate-200 flex flex-col justify-between">
     <div className="flex flex-col gap-5">
       <h3 className="text-sm uppercase tracking-wider font-bold text-slate-500 mb-2">Parâmetros</h3>
       {children}
-    </div>
-    
-    <div className="mt-10 pt-8 border-t border-slate-200">
-      <AdPlaceholder className="w-full min-h-[280px]" />
     </div>
   </div>
 );
 
 export const ContentArea: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div className="w-full lg:w-2/3 p-6 lg:p-8 flex flex-col gap-6 bg-white">
-    <AdPlaceholder className="w-full min-h-[100px]" />
+  <div className="w-full xl:flex-1 p-6 lg:p-8 flex flex-col gap-6 bg-white min-w-0">
     {children}
   </div>
 );

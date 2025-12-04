@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { CalculatorLayout, Sidebar, ContentArea, Input, Button, ResultBox } from '../ui/Shared';
+import { CalculatorLayout, Sidebar, ContentArea, Input, Button, ResultBox, ResponsiveAdBlock } from '../ui/Shared';
 import * as MathUtils from '../../utils/financialMath';
 import { AmortizationResult } from '../../types';
 
@@ -68,6 +68,7 @@ export const PriceCalc: React.FC<Props> = ({ onBack }) => {
         <Button onClick={calculate}>Gerar Tabela Price</Button>
       </Sidebar>
       <ContentArea>
+        <ResponsiveAdBlock />
         {result ? (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -114,6 +115,7 @@ export const SACCalc: React.FC<Props> = ({ onBack }) => {
         <Button onClick={calculate}>Gerar Tabela SAC</Button>
       </Sidebar>
       <ContentArea>
+        <ResponsiveAdBlock />
         {result ? (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

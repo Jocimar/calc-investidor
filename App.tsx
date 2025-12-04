@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Calculator, 
@@ -11,12 +12,14 @@ import {
   BarChart3,
   CalendarClock,
   ArrowRight,
-  DivideSquare
+  DivideSquare,
+  Landmark
 } from 'lucide-react';
-import { Card, AdPlaceholder } from './components/ui/Shared';
+import { Card, AdPlaceholder, ResponsiveAdBlock } from './components/ui/Shared';
 import * as Basic from './components/calculators/BasicCalculators';
 import * as Advanced from './components/calculators/AdvancedCalculators';
 import * as Amort from './components/calculators/Amortization';
+import { FixedIncomeSimulator } from './components/calculators/FixedIncomeCalculators';
 import { PercentageCalculators } from './components/calculators/PercentageCalculators';
 import { AboutPage, PrivacyPage, TermsPage } from './components/pages/StaticPages';
 
@@ -30,7 +33,8 @@ type View =
   | 'price' | 'sac'
   | 'inflation' | 'depreciation'
   | 'percentage'
-  | 'about' | 'privacy' | 'terms'; // New views
+  | 'fixed-income' // Unified view for Poupança, CDB, LCI
+  | 'about' | 'privacy' | 'terms'; 
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('dashboard');
@@ -39,6 +43,11 @@ const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setCurrentView('dashboard');
   }
+
+  const navigateTo = (view: View) => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setCurrentView(view);
+  };
 
   const renderContent = () => {
     switch(currentView) {
@@ -57,6 +66,7 @@ const App: React.FC = () => {
       case 'inflation': return <Basic.InflationCalc onBack={goToDashboard} />;
       case 'depreciation': return <Basic.DepreciationCalc onBack={goToDashboard} />;
       case 'percentage': return <PercentageCalculators onBack={goToDashboard} />;
+      case 'fixed-income': return <FixedIncomeSimulator onBack={goToDashboard} />;
       case 'about': return <AboutPage onBack={goToDashboard} />;
       case 'privacy': return <PrivacyPage onBack={goToDashboard} />;
       case 'terms': return <TermsPage onBack={goToDashboard} />;
@@ -72,49 +82,53 @@ const App: React.FC = () => {
             Selecione uma calculadora abaixo para começar seu planejamento financeiro.
           </p>
           
-          <div className="flex justify-center mb-8">
-            <AdPlaceholder 
-              className="min-h-[90px] shadow-sm" 
-              slot="9775572766" 
-              style={{ display: 'inline-block', width: '728px', height: '90px' }}
-              format=""
-              responsive="false"
-            />
-          </div>
+          <ResponsiveAdBlock />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {/* MOVED TO TOP: Matemática Básica */}
+        {/* TOP: Matemática Básica */}
         <h3 className="col-span-full text-xl font-bold text-slate-800 flex items-center gap-2 mt-4 pb-2 border-b border-slate-200">
           <DivideSquare className="text-orange-500" /> Matemática Básica
         </h3>
         <Card 
           title="Calculadoras de Porcentagem" 
           description="4 modos: % de valor, proporção, aumento e desconto real." 
-          onClick={() => setCurrentView('percentage')} 
+          onClick={() => navigateTo('percentage')} 
           icon={<Percent size={20} />}
         />
 
+        {/* Rendimento & Juros */}
         <h3 className="col-span-full text-xl font-bold text-slate-800 flex items-center gap-2 mt-8 pb-2 border-b border-slate-200">
           <PiggyBank className="text-investor-500" /> Rendimento & Juros
         </h3>
         <Card 
           title="Juros Simples" 
           description="Cálculo linear ideal para empréstimos de curto prazo ou descontos." 
-          onClick={() => setCurrentView('simple-interest')} 
+          onClick={() => navigateTo('simple-interest')} 
           icon={<Percent size={20} />}
         />
         <Card 
           title="Juros Compostos" 
           description="O poder dos juros sobre juros. Fundamental para investimentos de longo prazo." 
-          onClick={() => setCurrentView('compound-interest')} 
+          onClick={() => navigateTo('compound-interest')} 
           icon={<TrendingUp size={20} />}
         />
         <Card 
           title="Ajuste por Inflação" 
           description="Descubra o valor real do seu dinheiro corrigido pelo tempo." 
-          onClick={() => setCurrentView('inflation')} 
+          onClick={() => navigateTo('inflation')} 
           icon={<Activity size={20} />}
+        />
+
+        {/* NEW: Renda Fixa */}
+        <h3 className="col-span-full text-xl font-bold text-slate-800 flex items-center gap-2 mt-8 pb-2 border-b border-slate-200">
+          <Landmark className="text-investor-500" /> Renda Fixa
+        </h3>
+        <Card 
+          title="Simulador de Renda Fixa" 
+          description="Compare a rentabilidade entre Poupança, CDB, RDB, LCI e LCA em um único lugar." 
+          onClick={() => navigateTo('fixed-income')} 
+          icon={<Landmark size={20} />}
         />
         
         <h3 className="col-span-full text-xl font-bold text-slate-800 flex items-center gap-2 mt-8 pb-2 border-b border-slate-200">
@@ -123,22 +137,22 @@ const App: React.FC = () => {
         <Card 
           title="Valor Futuro (FV)" 
           description="Quanto seu dinheiro aplicado hoje valerá no futuro?" 
-          onClick={() => setCurrentView('fv')} 
+          onClick={() => navigateTo('fv')} 
         />
         <Card 
           title="Valor Presente (PV)" 
           description="Quanto você precisa investir hoje para ter X no futuro?" 
-          onClick={() => setCurrentView('pv')} 
+          onClick={() => navigateTo('pv')} 
         />
         <Card 
           title="Anuidade (FV)" 
           description="Acumulação de capital com depósitos mensais recorrentes." 
-          onClick={() => setCurrentView('annuity-fv')} 
+          onClick={() => navigateTo('annuity-fv')} 
         />
         <Card 
           title="Anuidade (PV)" 
           description="Capital necessário hoje para garantir retiradas mensais." 
-          onClick={() => setCurrentView('annuity-pv')} 
+          onClick={() => navigateTo('annuity-pv')} 
         />
 
         <h3 className="col-span-full text-xl font-bold text-slate-800 flex items-center gap-2 mt-8 pb-2 border-b border-slate-200">
@@ -147,13 +161,13 @@ const App: React.FC = () => {
         <Card 
           title="Tabela PRICE" 
           description="Financiamento com parcelas fixas (ex: carros, CDC)." 
-          onClick={() => setCurrentView('price')} 
+          onClick={() => navigateTo('price')} 
           icon={<Briefcase size={20} />}
         />
         <Card 
           title="Tabela SAC" 
           description="Financiamento com amortização constante (ex: imobiliário)." 
-          onClick={() => setCurrentView('sac')} 
+          onClick={() => navigateTo('sac')} 
           icon={<LineChart size={20} />}
         />
 
@@ -163,27 +177,27 @@ const App: React.FC = () => {
         <Card 
           title="CAGR" 
           description="Taxa de crescimento anual composta para medir performance." 
-          onClick={() => setCurrentView('cagr')} 
+          onClick={() => navigateTo('cagr')} 
         />
         <Card 
           title="ROI" 
           description="Retorno sobre investimento. Quanto você lucrou percentualmente?" 
-          onClick={() => setCurrentView('roi')} 
+          onClick={() => navigateTo('roi')} 
         />
         <Card 
           title="VPL / NPV" 
           description="Análise de viabilidade de projetos baseada em fluxo de caixa." 
-          onClick={() => setCurrentView('npv')} 
+          onClick={() => navigateTo('npv')} 
         />
         <Card 
           title="TIR / IRR" 
           description="A taxa interna de retorno de um projeto ou investimento." 
-          onClick={() => setCurrentView('irr')} 
+          onClick={() => navigateTo('irr')} 
         />
         <Card 
           title="Depreciação" 
           description="Cálculo linear da perda de valor de um ativo." 
-          onClick={() => setCurrentView('depreciation')} 
+          onClick={() => navigateTo('depreciation')} 
         />
       </div>
     </div>
@@ -193,7 +207,7 @@ const App: React.FC = () => {
     <div className="min-h-screen font-sans text-slate-800 bg-slate-50 flex flex-col">
       {/* Header */}
       <header className="bg-investor-900 text-white sticky top-0 z-50 shadow-lg border-b border-investor-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div 
             className="flex items-center gap-2 cursor-pointer group" 
             onClick={goToDashboard}
@@ -215,13 +229,13 @@ const App: React.FC = () => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <main className="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {renderContent()}
       </main>
 
       {/* Footer */}
       <footer className="bg-white text-slate-500 py-12 border-t border-slate-200 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
              {/* Brand */}
              <div className="flex flex-col gap-4">
@@ -239,18 +253,18 @@ const App: React.FC = () => {
              {/* Links */}
              <div className="flex flex-col gap-2">
                <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">Ferramentas</h4>
-               <button onClick={() => { setCurrentView('compound-interest'); window.scrollTo(0,0); }} className="text-left text-sm hover:text-investor-600 hover:underline">Juros Compostos</button>
-               <button onClick={() => { setCurrentView('simple-interest'); window.scrollTo(0,0); }} className="text-left text-sm hover:text-investor-600 hover:underline">Juros Simples</button>
-               <button onClick={() => { setCurrentView('price'); window.scrollTo(0,0); }} className="text-left text-sm hover:text-investor-600 hover:underline">Financiamento (PRICE)</button>
-               <button onClick={() => { setCurrentView('roi'); window.scrollTo(0,0); }} className="text-left text-sm hover:text-investor-600 hover:underline">Retorno (ROI)</button>
+               <button onClick={() => navigateTo('compound-interest')} className="text-left text-sm hover:text-investor-600 hover:underline">Juros Compostos</button>
+               <button onClick={() => navigateTo('simple-interest')} className="text-left text-sm hover:text-investor-600 hover:underline">Juros Simples</button>
+               <button onClick={() => navigateTo('price')} className="text-left text-sm hover:text-investor-600 hover:underline">Financiamento (PRICE)</button>
+               <button onClick={() => navigateTo('fixed-income')} className="text-left text-sm hover:text-investor-600 hover:underline">Renda Fixa</button>
              </div>
 
              {/* Institutional */}
              <div className="flex flex-col gap-2">
                <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">Institucional</h4>
-               <button onClick={() => { setCurrentView('about'); window.scrollTo(0,0); }} className="text-left text-sm hover:text-investor-600 hover:underline">Sobre Nós</button>
-               <button onClick={() => { setCurrentView('privacy'); window.scrollTo(0,0); }} className="text-left text-sm hover:text-investor-600 hover:underline">Política de Privacidade</button>
-               <button onClick={() => { setCurrentView('terms'); window.scrollTo(0,0); }} className="text-left text-sm hover:text-investor-600 hover:underline">Termos de Uso</button>
+               <button onClick={() => navigateTo('about')} className="text-left text-sm hover:text-investor-600 hover:underline">Sobre Nós</button>
+               <button onClick={() => navigateTo('privacy')} className="text-left text-sm hover:text-investor-600 hover:underline">Política de Privacidade</button>
+               <button onClick={() => navigateTo('terms')} className="text-left text-sm hover:text-investor-600 hover:underline">Termos de Uso</button>
              </div>
           </div>
           

@@ -1,7 +1,8 @@
+
 import React, { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend, LineChart, Line } from 'recharts';
 import { ArrowLeft } from 'lucide-react';
-import { CalculatorLayout, Sidebar, ContentArea, Input, Button, ResultBox, Select } from '../ui/Shared';
+import { CalculatorLayout, Sidebar, ContentArea, Input, Button, ResultBox, Select, ResponsiveAdBlock } from '../ui/Shared';
 import * as MathUtils from '../../utils/financialMath';
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
 export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
   const [values, setValues] = useState({ 
     capital: '1000', 
-    monthly: '0', // Added monthly contribution
+    monthly: '0', 
     rate: '10',
     rateType: 'yearly' as 'yearly' | 'monthly',
     time: '1',
@@ -44,7 +45,7 @@ export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-5">
       <div className="mb-6 flex items-center gap-4">
         <button onClick={onBack} className="p-2 rounded-full bg-white text-slate-600 shadow-sm border border-slate-200 hover:bg-slate-50 transition-colors">
           <ArrowLeft size={20} />
@@ -111,7 +112,7 @@ export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
           </div>
         </div>
 
-        <div className="flex justify-between items-center border-b border-slate-100 pb-8 mb-8">
+        <div className="flex justify-between items-center border-b border-slate-100 pb-8 mb-4">
           <button 
             onClick={calculate}
             className="bg-investor-800 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-investor-900 transition-all active:scale-95"
@@ -119,10 +120,11 @@ export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
             Calcular
           </button>
            <div className="flex gap-4 text-sm font-medium">
-             <button className="text-investor-600 hover:text-investor-800 hover:underline">Simular retiradas mensais</button>
              <button onClick={reset} className="text-slate-400 hover:text-slate-600">Limpar</button>
           </div>
         </div>
+
+        <ResponsiveAdBlock />
 
         {/* RESULTS SECTION */}
         {result ? (
@@ -247,7 +249,7 @@ export const CompoundInterestCalc: React.FC<Props> = ({ onBack }) => {
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-5">
       <div className="mb-6 flex items-center gap-4">
         <button onClick={onBack} className="p-2 rounded-full bg-white text-slate-600 shadow-sm border border-slate-200 hover:bg-slate-50 transition-colors">
           <ArrowLeft size={20} />
@@ -310,7 +312,7 @@ export const CompoundInterestCalc: React.FC<Props> = ({ onBack }) => {
           </div>
         </div>
 
-        <div className="flex justify-between items-center border-b border-slate-100 pb-8 mb-8">
+        <div className="flex justify-between items-center border-b border-slate-100 pb-8 mb-4">
           <button 
             onClick={calculate}
             className="bg-investor-800 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-investor-900 transition-all active:scale-95"
@@ -318,10 +320,11 @@ export const CompoundInterestCalc: React.FC<Props> = ({ onBack }) => {
             Calcular
           </button>
           <div className="flex gap-4 text-sm font-medium">
-             <button className="text-investor-600 hover:text-investor-800 hover:underline">Simular retiradas mensais</button>
              <button onClick={reset} className="text-slate-400 hover:text-slate-600">Limpar</button>
           </div>
         </div>
+
+        <ResponsiveAdBlock />
 
         {/* RESULTS SECTION */}
         {result && (
@@ -427,6 +430,7 @@ export const FVCalc: React.FC<Props> = ({ onBack }) => {
         <Button onClick={calculate}>Calcular FV</Button>
       </Sidebar>
       <ContentArea>
+        <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="Valor Futuro" value={MathUtils.formatCurrency(result)} highlight />
         ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
@@ -457,6 +461,7 @@ export const PVCalc: React.FC<Props> = ({ onBack }) => {
         <Button onClick={calculate}>Calcular PV</Button>
       </Sidebar>
       <ContentArea>
+        <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="Valor Presente Necessário" value={MathUtils.formatCurrency(result)} highlight />
         ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
@@ -487,6 +492,7 @@ export const CAGRCalc: React.FC<Props> = ({ onBack }) => {
         <Button onClick={calculate}>Calcular CAGR</Button>
       </Sidebar>
       <ContentArea>
+        <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="CAGR (Crescimento Anual)" value={MathUtils.formatPercent(result)} highlight />
         ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
@@ -515,6 +521,7 @@ export const ROICalc: React.FC<Props> = ({ onBack }) => {
         <Button onClick={calculate}>Calcular ROI</Button>
       </Sidebar>
       <ContentArea>
+        <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="ROI Total" value={MathUtils.formatPercent(result)} highlight />
         ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
@@ -545,6 +552,7 @@ export const InflationCalc: React.FC<Props> = ({ onBack }) => {
         <Button onClick={calculate}>Calcular Valor Corrigido</Button>
       </Sidebar>
       <ContentArea>
+        <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="Valor Corrigido" value={MathUtils.formatCurrency(result)} highlight />
         ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
@@ -575,6 +583,7 @@ export const DepreciationCalc: React.FC<Props> = ({ onBack }) => {
         <Button onClick={calculate}>Calcular Depreciação Anual</Button>
       </Sidebar>
       <ContentArea>
+        <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="Depreciação Anual" value={MathUtils.formatCurrency(result)} highlight />
         ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}

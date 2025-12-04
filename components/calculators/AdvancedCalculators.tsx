@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { CalculatorLayout, Sidebar, ContentArea, Input, Button, ResultBox, Select } from '../ui/Shared';
+import { CalculatorLayout, Sidebar, ContentArea, Input, Button, ResultBox, Select, ResponsiveAdBlock } from '../ui/Shared';
 import * as MathUtils from '../../utils/financialMath';
 import { AnnuityType } from '../../types';
 
@@ -30,6 +30,7 @@ export const AnnuityFVCalc: React.FC<Props> = ({ onBack }) => {
         <Button onClick={calculate}>Calcular</Button>
       </Sidebar>
       <ContentArea>
+        <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="Valor Acumulado (FV)" value={MathUtils.formatCurrency(result)} highlight />
         ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
@@ -60,6 +61,7 @@ export const AnnuityPVCalc: React.FC<Props> = ({ onBack }) => {
         <Button onClick={calculate}>Calcular</Button>
       </Sidebar>
       <ContentArea>
+        <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="Valor Presente da Série" value={MathUtils.formatCurrency(result)} highlight />
         ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
@@ -96,6 +98,7 @@ export const NPVCalc: React.FC<Props> = ({ onBack }) => {
         <Button onClick={calculate}>Calcular VPL</Button>
       </Sidebar>
       <ContentArea>
+        <ResponsiveAdBlock />
         {result ? (
           <>
             <ResultBox 
@@ -154,6 +157,7 @@ export const IRRCalc: React.FC<Props> = ({ onBack }) => {
         <Button onClick={calculate}>Calcular TIR</Button>
       </Sidebar>
       <ContentArea>
+        <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="Taxa Interna de Retorno" value={MathUtils.formatPercent(result)} highlight />
         ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}

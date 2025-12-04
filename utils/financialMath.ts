@@ -77,7 +77,7 @@ export const calcSimpleInterest = (
 export const calcCompoundInterest = (
   principal: number,
   monthlyContribution: number,
-  rate: number,
+  rate: number, 
   rateType: 'yearly' | 'monthly',
   period: number,
   periodType: 'years' | 'months'
@@ -333,6 +333,86 @@ export const calcPercentRealDiscount = (original: number, current: number) => {
   return {
     discountValue,
     discountPercent
+  };
+};
+
+// --- NEW: Fixed Income (Renda Fixa) ---
+
+const getIncomeTaxRate = (days: number) => {
+  if (days <= 180) return 22.5;
+  if (days <= 360) return 20.0;
+  if (days <= 720) return 17.5;
+  return 15.0;
+};
+
+export const calcFixedIncomeComparison = (
+  capital: number,
+  days: number,
+  diRate: number,   // Taxa DI anual (ex: 13.15)
+  selicRate: number, // Taxa SELIC anual (ex: 13.25)
+  cdbPercent: number, // % do CDI (ex: 100)
+  lciPercent: number  // % do CDI (ex: 90)
+) => {
+  const years = days / 360; // Using commercial year for simplicity
+  
+  // 1. Tax Rule
+  const taxRate = getIncomeTaxRate(days);
+
+  // 2. Poupança (Simplified Rule)
+  // Rule: If Selic > 8.5% -> 0.5% a.m. + TR (Ignored/Zeroed here for approximation)
+  // Rule: If Selic <= 8.5% -> 70% of Selic
+  // Annualized rate approximation
+  let poupancaRateAnnual = 0;
+  if (selicRate > 8.5) {
+      // 0.5% a.m. compounded 12 months = 6.17% a.a.
+      poupancaRateAnnual = 6.1678; 
+  } else {
+      poupancaRateAnnual = selicRate * 0.7;
+  }
+  
+  const poupancaTotal = capital * Math.pow(1 + poupancaRateAnnual/100, years);
+  const poupancaGrossYield = poupancaTotal - capital;
+  // Poupança is tax free
+  const poupancaNetTotal = poupancaTotal;
+  const poupancaNetYield = poupancaGrossYield;
+
+  // 3. CDB / RDB (Taxed)
+  // Rate is % of DI
+  const cdbEffectiveRateAnnual = diRate * (cdbPercent / 100);
+  const cdbTotal = capital * Math.pow(1 + cdbEffectiveRateAnnual/100, years);
+  const cdbGrossYield = cdbTotal - capital;
+  const cdbTax = cdbGrossYield * (taxRate / 100);
+  const cdbNetYield = cdbGrossYield - cdbTax;
+  const cdbNetTotal = capital + cdbNetYield;
+
+  // 4. LCI / LCA (Tax Free)
+  const lciEffectiveRateAnnual = diRate * (lciPercent / 100);
+  const lciTotal = capital * Math.pow(1 + lciEffectiveRateAnnual/100, years);
+  const lciGrossYield = lciTotal - capital;
+  // LCI is tax free
+  const lciNetTotal = lciTotal;
+  const lciNetYield = lciGrossYield;
+
+  return {
+    days,
+    taxRate,
+    poupanca: {
+      total: poupancaNetTotal,
+      yield: poupancaNetYield,
+      percentReturn: (poupancaNetYield / capital) * 100
+    },
+    cdb: {
+      total: cdbNetTotal,
+      grossYield: cdbGrossYield,
+      netYield: cdbNetYield,
+      taxAmount: cdbTax,
+      percentReturn: (cdbNetYield / capital) * 100
+    },
+    lci: {
+      total: lciNetTotal,
+      yield: lciNetYield,
+      percentReturn: (lciNetYield / capital) * 100
+    }
   };
 };
 
