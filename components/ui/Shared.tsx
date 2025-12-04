@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Share2, Check, Copy } from 'lucide-react';
 
 interface CardProps {
   title: string;
@@ -224,5 +224,58 @@ export const ResultBox: React.FC<{ label: string; value: string | number; subVal
       <p className={`text-2xl font-bold ${highlight ? 'text-investor-700' : 'text-slate-800'}`}>{value}</p>
       {subValue && <p className="text-sm text-slate-600 mt-1">{subValue}</p>}
     </div>
+  );
+};
+
+export const ShareButton: React.FC = () => {
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const shareData = {
+      title: 'CALC INVESTIDOR',
+      text: 'Confira estas calculadoras financeiras gratuitas e completas!',
+      url: window.location.href
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        // User cancelled, ignore
+      }
+    } else {
+      // Fallback for desktop browsers
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy');
+      }
+    }
+  };
+
+  return (
+    <>
+      <button
+        onClick={handleShare}
+        className="fixed bottom-6 right-6 z-50 bg-investor-600 hover:bg-investor-700 text-white p-4 rounded-full shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group"
+        aria-label="Compartilhar"
+        title="Compartilhar Calculadora"
+      >
+        {copied ? (
+          <Check size={24} className="animate-in zoom-in duration-300" />
+        ) : (
+          <Share2 size={24} className="group-hover:-rotate-12 transition-transform duration-300" />
+        )}
+      </button>
+      
+      {/* Toast Notification */}
+      {copied && (
+        <div className="fixed bottom-24 right-6 z-50 bg-slate-800 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-300 flex items-center gap-2">
+           <Copy size={14} /> Link copiado!
+        </div>
+      )}
+    </>
   );
 };

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Calculator, 
   TrendingUp, 
@@ -15,7 +15,7 @@ import {
   DivideSquare,
   Landmark
 } from 'lucide-react';
-import { Card, AdPlaceholder, ResponsiveAdBlock } from './components/ui/Shared';
+import { Card, AdPlaceholder, ResponsiveAdBlock, ShareButton } from './components/ui/Shared';
 import * as Basic from './components/calculators/BasicCalculators';
 import * as Advanced from './components/calculators/AdvancedCalculators';
 import * as Amort from './components/calculators/Amortization';
@@ -37,17 +37,51 @@ type View =
   | 'about' | 'privacy' | 'terms'; 
 
 const App: React.FC = () => {
+  // Helper to get view from URL
+  const getViewFromUrl = (): View => {
+    if (typeof window === 'undefined') return 'dashboard';
+    const params = new URLSearchParams(window.location.search);
+    const view = params.get('view') as View;
+    const validViews: View[] = [
+      'simple-interest', 'compound-interest', 'fv', 'pv', 
+      'annuity-fv', 'annuity-pv', 'cagr', 'roi', 'npv', 
+      'irr', 'price', 'sac', 'inflation', 'depreciation', 
+      'percentage', 'fixed-income', 'about', 'privacy', 'terms'
+    ];
+    return validViews.includes(view) ? view : 'dashboard';
+  };
+
   const [currentView, setCurrentView] = useState<View>('dashboard');
 
-  const goToDashboard = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setCurrentView('dashboard');
-  }
+  // Initialize view from URL on mount
+  useEffect(() => {
+    setCurrentView(getViewFromUrl());
+
+    const handlePopState = () => {
+      setCurrentView(getViewFromUrl());
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const navigateTo = (view: View) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setCurrentView(view);
+    
+    // Update URL
+    const url = new URL(window.location.href);
+    if (view === 'dashboard') {
+      url.searchParams.delete('view');
+    } else {
+      url.searchParams.set('view', view);
+    }
+    window.history.pushState({}, '', url);
   };
+
+  const goToDashboard = () => {
+    navigateTo('dashboard');
+  }
 
   const renderContent = () => {
     switch(currentView) {
@@ -232,6 +266,9 @@ const App: React.FC = () => {
       <main className="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {renderContent()}
       </main>
+
+      {/* Floating Share Button */}
+      <ShareButton />
 
       {/* Footer */}
       <footer className="bg-white text-slate-500 py-12 border-t border-slate-200 mt-auto">
