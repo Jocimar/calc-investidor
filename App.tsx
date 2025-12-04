@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Calculator, 
@@ -13,7 +12,9 @@ import {
   CalendarClock,
   ArrowRight,
   DivideSquare,
-  Landmark
+  Landmark,
+  Moon,
+  Sun
 } from 'lucide-react';
 import { Card, AdPlaceholder, ResponsiveAdBlock, ShareButton } from './components/ui/Shared';
 import * as Basic from './components/calculators/BasicCalculators';
@@ -31,12 +32,39 @@ type View =
   | 'cagr' | 'roi'
   | 'npv' | 'irr'
   | 'price' | 'sac'
+  | 'amortization-comparison'
   | 'inflation' | 'depreciation'
   | 'percentage'
-  | 'fixed-income' // Unified view for Poupança, CDB, LCI
+  | 'fixed-income'
   | 'about' | 'privacy' | 'terms'; 
 
 const App: React.FC = () => {
+  // Theme State
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('theme');
+      if (saved) return saved as 'light' | 'dark';
+      // Default to light, ignoring system preference
+      return 'light';
+    }
+    return 'light';
+  });
+
+  // Apply Theme to HTML
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
   // Helper to get view from URL
   const getViewFromUrl = (): View => {
     if (typeof window === 'undefined') return 'dashboard';
@@ -45,7 +73,8 @@ const App: React.FC = () => {
     const validViews: View[] = [
       'simple-interest', 'compound-interest', 'fv', 'pv', 
       'annuity-fv', 'annuity-pv', 'cagr', 'roi', 'npv', 
-      'irr', 'price', 'sac', 'inflation', 'depreciation', 
+      'irr', 'price', 'sac', 'amortization-comparison', 
+      'inflation', 'depreciation', 
       'percentage', 'fixed-income', 'about', 'privacy', 'terms'
     ];
     return validViews.includes(view) ? view : 'dashboard';
@@ -53,7 +82,7 @@ const App: React.FC = () => {
 
   const [currentView, setCurrentView] = useState<View>('dashboard');
 
-  // Initialize view from URL on mount
+  // Initialize view from URL on mount and handle Browser Back Button
   useEffect(() => {
     setCurrentView(getViewFromUrl());
 
@@ -65,8 +94,12 @@ const App: React.FC = () => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const navigateTo = (view: View) => {
+  // ALWAYS Scroll to top when view changes
+  useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentView]);
+
+  const navigateTo = (view: View) => {
     setCurrentView(view);
     
     // Update URL
@@ -97,6 +130,7 @@ const App: React.FC = () => {
       case 'irr': return <Advanced.IRRCalc onBack={goToDashboard} />;
       case 'price': return <Amort.PriceCalc onBack={goToDashboard} />;
       case 'sac': return <Amort.SACCalc onBack={goToDashboard} />;
+      case 'amortization-comparison': return <Amort.AmortizationComparator onBack={goToDashboard} />;
       case 'inflation': return <Basic.InflationCalc onBack={goToDashboard} />;
       case 'depreciation': return <Basic.DepreciationCalc onBack={goToDashboard} />;
       case 'percentage': return <PercentageCalculators onBack={goToDashboard} />;
@@ -111,8 +145,8 @@ const App: React.FC = () => {
   const renderDashboard = () => (
     <div className="animate-in fade-in duration-500">
       <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Ferramentas Financeiras Profissionais</h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4">Ferramentas Financeiras Profissionais</h2>
+          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-8">
             Selecione uma calculadora abaixo para começar seu planejamento financeiro.
           </p>
           
@@ -121,7 +155,7 @@ const App: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {/* TOP: Matemática Básica */}
-        <h3 className="col-span-full text-xl font-bold text-slate-800 flex items-center gap-2 mt-4 pb-2 border-b border-slate-200">
+        <h3 className="col-span-full text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 mt-4 pb-2 border-b border-slate-200 dark:border-slate-700">
           <DivideSquare className="text-orange-500" /> Matemática Básica
         </h3>
         <Card 
@@ -132,7 +166,7 @@ const App: React.FC = () => {
         />
 
         {/* Rendimento & Juros */}
-        <h3 className="col-span-full text-xl font-bold text-slate-800 flex items-center gap-2 mt-8 pb-2 border-b border-slate-200">
+        <h3 className="col-span-full text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 mt-8 pb-2 border-b border-slate-200 dark:border-slate-700">
           <PiggyBank className="text-investor-500" /> Rendimento & Juros
         </h3>
         <Card 
@@ -155,7 +189,7 @@ const App: React.FC = () => {
         />
 
         {/* NEW: Renda Fixa */}
-        <h3 className="col-span-full text-xl font-bold text-slate-800 flex items-center gap-2 mt-8 pb-2 border-b border-slate-200">
+        <h3 className="col-span-full text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 mt-8 pb-2 border-b border-slate-200 dark:border-slate-700">
           <Landmark className="text-investor-500" /> Renda Fixa
         </h3>
         <Card 
@@ -165,7 +199,7 @@ const App: React.FC = () => {
           icon={<Landmark size={20} />}
         />
         
-        <h3 className="col-span-full text-xl font-bold text-slate-800 flex items-center gap-2 mt-8 pb-2 border-b border-slate-200">
+        <h3 className="col-span-full text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 mt-8 pb-2 border-b border-slate-200 dark:border-slate-700">
           <CalendarClock className="text-blue-500" /> Valor no Tempo
         </h3>
         <Card 
@@ -189,23 +223,17 @@ const App: React.FC = () => {
           onClick={() => navigateTo('annuity-pv')} 
         />
 
-        <h3 className="col-span-full text-xl font-bold text-slate-800 flex items-center gap-2 mt-8 pb-2 border-b border-slate-200">
+        <h3 className="col-span-full text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 mt-8 pb-2 border-b border-slate-200 dark:border-slate-700">
           <DollarSign className="text-emerald-500" /> Financiamento & Empréstimo
         </h3>
         <Card 
-          title="Tabela PRICE" 
-          description="Financiamento com parcelas fixas (ex: carros, CDC)." 
-          onClick={() => navigateTo('price')} 
+          title="Comparador SAC vs PRICE" 
+          description="Compare sistemas de amortização lado a lado. Parcelas fixas vs decrescentes." 
+          onClick={() => navigateTo('amortization-comparison')} 
           icon={<Briefcase size={20} />}
         />
-        <Card 
-          title="Tabela SAC" 
-          description="Financiamento com amortização constante (ex: imobiliário)." 
-          onClick={() => navigateTo('sac')} 
-          icon={<LineChart size={20} />}
-        />
 
-        <h3 className="col-span-full text-xl font-bold text-slate-800 flex items-center gap-2 mt-8 pb-2 border-b border-slate-200">
+        <h3 className="col-span-full text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 mt-8 pb-2 border-b border-slate-200 dark:border-slate-700">
           <BarChart3 className="text-purple-500" /> Indicadores de Negócio
         </h3>
         <Card 
@@ -238,26 +266,35 @@ const App: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen font-sans text-slate-800 bg-slate-50 flex flex-col">
+    <div className="min-h-screen font-sans text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-900 flex flex-col transition-colors duration-300">
       {/* Header */}
-      <header className="bg-investor-900 text-white sticky top-0 z-50 shadow-lg border-b border-investor-800">
+      <header className="bg-investor-900 dark:bg-slate-950 text-white sticky top-0 z-50 shadow-lg border-b border-investor-800 dark:border-slate-800">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div 
             className="flex items-center gap-2 cursor-pointer group" 
             onClick={goToDashboard}
           >
-            <div className="bg-investor-800 p-2 rounded-lg border border-investor-700 group-hover:bg-investor-700 transition-colors">
+            <div className="bg-investor-800 dark:bg-slate-800 p-2 rounded-lg border border-investor-700 dark:border-slate-700 group-hover:bg-investor-700 dark:group-hover:bg-slate-700 transition-colors">
               <Calculator className="w-6 h-6 text-investor-300" />
             </div>
             <h1 className="text-xl font-bold tracking-tight">CALC <span className="text-investor-400">INVESTIDOR</span></h1>
           </div>
           
-          <nav className="flex gap-6 text-sm font-medium text-investor-200">
+          <nav className="flex items-center gap-6">
              {currentView !== 'dashboard' && (
-               <button onClick={goToDashboard} className="hover:text-white transition-colors flex items-center gap-1">
+               <button onClick={goToDashboard} className="text-sm font-medium text-investor-200 hover:text-white transition-colors hidden sm:block">
                  Voltar ao Início
                </button>
              )}
+             
+             {/* Theme Toggle */}
+             <button 
+               onClick={toggleTheme}
+               className="p-2 rounded-lg bg-investor-800 dark:bg-slate-800 text-investor-200 hover:text-white hover:bg-investor-700 dark:hover:bg-slate-700 transition-colors border border-investor-700 dark:border-slate-700"
+               aria-label="Alternar Tema"
+             >
+               {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+             </button>
           </nav>
         </div>
       </header>
@@ -271,45 +308,42 @@ const App: React.FC = () => {
       <ShareButton />
 
       {/* Footer */}
-      <footer className="bg-white text-slate-500 py-12 border-t border-slate-200 mt-auto">
+      <footer className="bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 py-12 border-t border-slate-200 dark:border-slate-800 mt-auto transition-colors duration-300">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
              {/* Brand */}
              <div className="flex flex-col gap-4">
                <div className="flex items-center gap-2">
-                <div className="bg-investor-100 p-1.5 rounded border border-investor-200">
-                  <Calculator className="w-5 h-5 text-investor-700" />
+                <div className="bg-investor-100 dark:bg-slate-800 p-1.5 rounded border border-investor-200 dark:border-slate-700">
+                  <Calculator className="w-5 h-5 text-investor-700 dark:text-investor-400" />
                 </div>
-                <span className="text-lg font-bold text-slate-800">CALC INVESTIDOR</span>
+                <span className="text-lg font-bold text-slate-800 dark:text-slate-200">CALC INVESTIDOR</span>
                </div>
-               <p className="text-sm text-slate-600 leading-relaxed">
+               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                  O conjunto mais completo de calculadoras financeiras para ajudar você a tomar as melhores decisões para o seu dinheiro.
                </p>
              </div>
 
              {/* Links */}
              <div className="flex flex-col gap-2">
-               <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">Ferramentas</h4>
-               <button onClick={() => navigateTo('compound-interest')} className="text-left text-sm hover:text-investor-600 hover:underline">Juros Compostos</button>
-               <button onClick={() => navigateTo('simple-interest')} className="text-left text-sm hover:text-investor-600 hover:underline">Juros Simples</button>
-               <button onClick={() => navigateTo('price')} className="text-left text-sm hover:text-investor-600 hover:underline">Financiamento (PRICE)</button>
-               <button onClick={() => navigateTo('fixed-income')} className="text-left text-sm hover:text-investor-600 hover:underline">Renda Fixa</button>
+               <h4 className="font-bold text-slate-800 dark:text-slate-200 mb-2 uppercase text-xs tracking-wider">Ferramentas</h4>
+               <button onClick={() => navigateTo('compound-interest')} className="text-left text-sm hover:text-investor-600 dark:hover:text-investor-400 hover:underline">Juros Compostos</button>
+               <button onClick={() => navigateTo('simple-interest')} className="text-left text-sm hover:text-investor-600 dark:hover:text-investor-400 hover:underline">Juros Simples</button>
+               <button onClick={() => navigateTo('amortization-comparison')} className="text-left text-sm hover:text-investor-600 dark:hover:text-investor-400 hover:underline">Financiamento (PRICE vs SAC)</button>
+               <button onClick={() => navigateTo('fixed-income')} className="text-left text-sm hover:text-investor-600 dark:hover:text-investor-400 hover:underline">Renda Fixa</button>
              </div>
 
              {/* Institutional */}
              <div className="flex flex-col gap-2">
-               <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">Institucional</h4>
-               <button onClick={() => navigateTo('about')} className="text-left text-sm hover:text-investor-600 hover:underline">Sobre Nós</button>
-               <button onClick={() => navigateTo('privacy')} className="text-left text-sm hover:text-investor-600 hover:underline">Política de Privacidade</button>
-               <button onClick={() => navigateTo('terms')} className="text-left text-sm hover:text-investor-600 hover:underline">Termos de Uso</button>
+               <h4 className="font-bold text-slate-800 dark:text-slate-200 mb-2 uppercase text-xs tracking-wider">Institucional</h4>
+               <button onClick={() => navigateTo('about')} className="text-left text-sm hover:text-investor-600 dark:hover:text-investor-400 hover:underline">Sobre Nós</button>
+               <button onClick={() => navigateTo('privacy')} className="text-left text-sm hover:text-investor-600 dark:hover:text-investor-400 hover:underline">Política de Privacidade</button>
+               <button onClick={() => navigateTo('terms')} className="text-left text-sm hover:text-investor-600 dark:hover:text-investor-400 hover:underline">Termos de Uso</button>
              </div>
           </div>
           
-          <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="pt-8 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm">© {new Date().getFullYear()} CALC INVESTIDOR. Todos os direitos reservados.</p>
-            <div className="flex gap-4">
-               {/* Social placeholders if needed */}
-            </div>
           </div>
         </div>
       </footer>

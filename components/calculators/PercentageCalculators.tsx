@@ -49,7 +49,7 @@ export const PercentageCalculators: React.FC<Props> = ({ onBack }) => {
       case 'value':
         return (
           <>
-            <div className="bg-investor-50 p-4 rounded-lg border border-investor-100 mb-4 text-sm text-investor-800">
+            <div className="bg-investor-50 dark:bg-investor-900/20 p-4 rounded-lg border border-investor-100 dark:border-investor-800 mb-4 text-sm text-investor-800 dark:text-investor-200">
               Exemplo: <strong>15%</strong> de <strong>R$ 300</strong> é quanto?
             </div>
             <Input label="Porcentagem (%)" type="number" value={valData.percent} onChange={e => setValData({ ...valData, percent: e.target.value })} />
@@ -59,7 +59,7 @@ export const PercentageCalculators: React.FC<Props> = ({ onBack }) => {
       case 'proportion':
         return (
           <>
-            <div className="bg-investor-50 p-4 rounded-lg border border-investor-100 mb-4 text-sm text-investor-800">
+            <div className="bg-investor-50 dark:bg-investor-900/20 p-4 rounded-lg border border-investor-100 dark:border-investor-800 mb-4 text-sm text-investor-800 dark:text-investor-200">
               Exemplo: <strong>R$ 300</strong> equivalem a quantos % de <strong>R$ 5.000</strong>?
             </div>
             <Input label="Valor da Parte (R$)" type="number" value={propData.part} onChange={e => setPropData({ ...propData, part: e.target.value })} />
@@ -69,7 +69,7 @@ export const PercentageCalculators: React.FC<Props> = ({ onBack }) => {
       case 'increase':
         return (
           <>
-            <div className="bg-investor-50 p-4 rounded-lg border border-investor-100 mb-4 text-sm text-investor-800">
+            <div className="bg-investor-50 dark:bg-investor-900/20 p-4 rounded-lg border border-investor-100 dark:border-investor-800 mb-4 text-sm text-investor-800 dark:text-investor-200">
               Exemplo: <strong>R$ 1.500</strong> com aumento de <strong>10%</strong>?
             </div>
             <Input label="Valor Inicial (R$)" type="number" value={incData.value} onChange={e => setIncData({ ...incData, value: e.target.value })} />
@@ -79,7 +79,7 @@ export const PercentageCalculators: React.FC<Props> = ({ onBack }) => {
       case 'decrease':
         return (
           <>
-            <div className="bg-investor-50 p-4 rounded-lg border border-investor-100 mb-4 text-sm text-investor-800">
+            <div className="bg-investor-50 dark:bg-investor-900/20 p-4 rounded-lg border border-investor-100 dark:border-investor-800 mb-4 text-sm text-investor-800 dark:text-investor-200">
                Exemplo: Redução de <strong>R$ 1.500</strong> para <strong>R$ 1.000</strong>.
             </div>
             <Input label="Valor Original (R$)" type="number" value={decData.original} onChange={e => setDecData({ ...decData, original: e.target.value })} />
@@ -90,7 +90,7 @@ export const PercentageCalculators: React.FC<Props> = ({ onBack }) => {
   };
 
   const renderResults = () => {
-    if (result === null) return <div className="text-slate-400 text-center mt-10">Preencha os dados e clique em calcular.</div>;
+    if (result === null) return <div className="text-slate-400 dark:text-slate-500 text-center mt-10">Preencha os dados e clique em calcular.</div>;
 
     switch (mode) {
       case 'value':
@@ -106,7 +106,7 @@ export const PercentageCalculators: React.FC<Props> = ({ onBack }) => {
                 <PieChart>
                   <Pie data={pieDataVal} cx="50%" cy="50%" innerRadius={60} outerRadius={80} fill="#8884d8" paddingAngle={5} dataKey="value">
                     <Cell fill={COLORS[0]} />
-                    <Cell fill={COLORS[1]} />
+                    <Cell fill="#cbd5e1" />
                   </Pie>
                   <Tooltip formatter={(val: number) => MathUtils.formatCurrency(val)} />
                   <Legend />
@@ -128,7 +128,7 @@ export const PercentageCalculators: React.FC<Props> = ({ onBack }) => {
                 <PieChart>
                   <Pie data={pieDataProp} cx="50%" cy="50%" innerRadius={60} outerRadius={80} fill="#8884d8" paddingAngle={5} dataKey="value">
                     <Cell fill={COLORS[3]} />
-                    <Cell fill={COLORS[1]} />
+                    <Cell fill="#cbd5e1" />
                   </Pie>
                   <Tooltip formatter={(val: number) => MathUtils.formatCurrency(val)} />
                   <Legend />
@@ -149,13 +149,13 @@ export const PercentageCalculators: React.FC<Props> = ({ onBack }) => {
                <ResultBox label="Valor do Aumento" value={MathUtils.formatCurrency(result.increase)} />
                <ResultBox label="Valor Final" value={MathUtils.formatCurrency(result.total)} highlight />
              </div>
-             <div className="h-64 mt-6 bg-slate-50 rounded-xl p-4">
+             <div className="h-64 mt-6 bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700">
                <ResponsiveContainer width="100%" height="100%">
                  <BarChart data={barDataInc}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip formatter={(val: number) => MathUtils.formatCurrency(val)} />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#475569" strokeOpacity={0.2} />
+                    <XAxis dataKey="name" tick={{fill: '#94a3b8'}} />
+                    <YAxis tick={{fill: '#94a3b8'}} />
+                    <Tooltip formatter={(val: number) => MathUtils.formatCurrency(val)} cursor={{fill: 'rgba(148, 163, 184, 0.1)'}} />
                     <Bar dataKey="valor" fill="#16a34a" />
                  </BarChart>
                </ResponsiveContainer>
@@ -174,13 +174,13 @@ export const PercentageCalculators: React.FC<Props> = ({ onBack }) => {
                <ResultBox label="Desconto (%)" value={MathUtils.formatPercent(result.discountPercent)} highlight />
                <ResultBox label="Valor Economizado" value={MathUtils.formatCurrency(result.discountValue)} />
              </div>
-              <div className="h-64 mt-6 bg-slate-50 rounded-xl p-4">
+              <div className="h-64 mt-6 bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700">
                <ResponsiveContainer width="100%" height="100%">
                  <BarChart data={barDataDec}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip formatter={(val: number) => MathUtils.formatCurrency(val)} />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#475569" strokeOpacity={0.2} />
+                    <XAxis dataKey="name" tick={{fill: '#94a3b8'}} />
+                    <YAxis tick={{fill: '#94a3b8'}} />
+                    <Tooltip formatter={(val: number) => MathUtils.formatCurrency(val)} cursor={{fill: 'rgba(148, 163, 184, 0.1)'}} />
                     <Bar dataKey="valor" fill="#ef4444" />
                  </BarChart>
                </ResponsiveContainer>
@@ -194,36 +194,36 @@ export const PercentageCalculators: React.FC<Props> = ({ onBack }) => {
     <CalculatorLayout title="Calculadoras de Porcentagem" onBack={onBack}>
       <Sidebar>
         <div className="mb-6">
-          <label className="text-xs uppercase font-bold text-slate-500 tracking-wider mb-2 block">Selecione o Cálculo</label>
+          <label className="text-xs uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider mb-2 block">Selecione o Cálculo</label>
           <div className="flex flex-col gap-2">
             <button 
               onClick={() => handleModeChange('value')}
-              className={`text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors ${mode === 'value' ? 'bg-investor-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}`}
+              className={`text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors ${mode === 'value' ? 'bg-investor-600 text-white shadow-md' : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600'}`}
             >
               % de um Valor
             </button>
             <button 
                onClick={() => handleModeChange('proportion')}
-               className={`text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors ${mode === 'proportion' ? 'bg-investor-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}`}
+               className={`text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors ${mode === 'proportion' ? 'bg-investor-600 text-white shadow-md' : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600'}`}
             >
               Proporção (%)
             </button>
             <button 
                onClick={() => handleModeChange('increase')}
-               className={`text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors ${mode === 'increase' ? 'bg-investor-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}`}
+               className={`text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors ${mode === 'increase' ? 'bg-investor-600 text-white shadow-md' : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600'}`}
             >
               Aumento Percentual
             </button>
             <button 
                onClick={() => handleModeChange('decrease')}
-               className={`text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors ${mode === 'decrease' ? 'bg-investor-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}`}
+               className={`text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors ${mode === 'decrease' ? 'bg-investor-600 text-white shadow-md' : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600'}`}
             >
               Desconto / Redução
             </button>
           </div>
         </div>
 
-        <div className="border-t border-slate-200 pt-6">
+        <div className="border-t border-slate-200 dark:border-slate-700 pt-6">
            {renderInputs()}
            <Button onClick={calculate}>Calcular</Button>
         </div>

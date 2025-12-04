@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend, LineChart, Line } from 'recharts';
 import { ArrowLeft } from 'lucide-react';
@@ -12,9 +11,9 @@ interface Props {
 // 1. Juros Simples
 export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
   const [values, setValues] = useState({ 
-    capital: '1000', 
-    monthly: '0', 
-    rate: '10',
+    capital: '300', 
+    monthly: '300', 
+    rate: '6',
     rateType: 'yearly' as 'yearly' | 'monthly',
     time: '1',
     timeType: 'years' as 'years' | 'months'
@@ -34,9 +33,9 @@ export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
 
   const reset = () => {
     setValues({ 
-      capital: '1000', 
-      monthly: '0',
-      rate: '10', 
+      capital: '300', 
+      monthly: '300',
+      rate: '6', 
       rateType: 'yearly',
       time: '1',
       timeType: 'years'
@@ -47,13 +46,13 @@ export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-5">
       <div className="mb-6 flex items-center gap-4">
-        <button onClick={onBack} className="p-2 rounded-full bg-white text-slate-600 shadow-sm border border-slate-200 hover:bg-slate-50 transition-colors">
+        <button onClick={onBack} className="p-2 rounded-full bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
           <ArrowLeft size={20} />
         </button>
-        <h2 className="text-2xl font-bold text-slate-800">Calculadora de Juros Simples</h2>
+        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Calculadora de Juros Simples</h2>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg border border-slate-100 p-6 lg:p-8">
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 p-6 lg:p-8 transition-colors duration-300">
         {/* INPUT SECTION */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Input 
@@ -80,7 +79,7 @@ export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
             </div>
             <div className="w-1/3 pt-7">
                <select 
-                className="w-full px-3 py-2.5 rounded-lg border border-slate-300 bg-white"
+                className="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100"
                 value={values.rateType}
                 onChange={e => setValues({...values, rateType: e.target.value as any})}
               >
@@ -101,7 +100,7 @@ export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
             </div>
              <div className="w-1/3 pt-7">
                <select 
-                className="w-full px-3 py-2.5 rounded-lg border border-slate-300 bg-white"
+                className="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100"
                 value={values.timeType}
                 onChange={e => setValues({...values, timeType: e.target.value as any})}
               >
@@ -112,7 +111,7 @@ export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
           </div>
         </div>
 
-        <div className="flex justify-between items-center border-b border-slate-100 pb-8 mb-4">
+        <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-8 mb-4">
           <button 
             onClick={calculate}
             className="bg-investor-800 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-investor-900 transition-all active:scale-95"
@@ -120,7 +119,7 @@ export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
             Calcular
           </button>
            <div className="flex gap-4 text-sm font-medium">
-             <button onClick={reset} className="text-slate-400 hover:text-slate-600">Limpar</button>
+             <button onClick={reset} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">Limpar</button>
           </div>
         </div>
 
@@ -129,37 +128,37 @@ export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
         {/* RESULTS SECTION */}
         {result ? (
           <div className="animate-in fade-in duration-700">
-            <h3 className="text-lg font-bold text-investor-800 mb-4">Resultado</h3>
+            <h3 className="text-lg font-bold text-investor-800 dark:text-investor-400 mb-4">Resultado</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
               {/* Main Highlight Card */}
-              <div className="bg-investor-800 text-white p-6 rounded-lg shadow-md text-center">
+              <div className="bg-investor-800 dark:bg-investor-900 text-white p-6 rounded-lg shadow-md text-center">
                 <p className="text-xs uppercase font-bold opacity-80 mb-2">Valor total final</p>
                 <p className="text-3xl font-bold">{MathUtils.formatCurrency(result.total)}</p>
               </div>
               
-              <div className="bg-white border border-slate-200 p-6 rounded-lg shadow-sm text-center">
-                 <p className="text-xs uppercase font-bold text-slate-500 mb-2">Valor Total Investido</p>
-                 <p className="text-2xl font-bold text-slate-800">{MathUtils.formatCurrency(result.invested)}</p>
+              <div className="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 p-6 rounded-lg shadow-sm text-center">
+                 <p className="text-xs uppercase font-bold text-slate-500 dark:text-slate-400 mb-2">Valor Total Investido</p>
+                 <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">{MathUtils.formatCurrency(result.invested)}</p>
               </div>
 
-              <div className="bg-white border border-slate-200 p-6 rounded-lg shadow-sm text-center">
-                 <p className="text-xs uppercase font-bold text-slate-500 mb-2">Total em Juros</p>
-                 <p className="text-2xl font-bold text-investor-600">{MathUtils.formatCurrency(result.interest)}</p>
+              <div className="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 p-6 rounded-lg shadow-sm text-center">
+                 <p className="text-xs uppercase font-bold text-slate-500 dark:text-slate-400 mb-2">Total em Juros</p>
+                 <p className="text-2xl font-bold text-investor-600 dark:text-investor-400">{MathUtils.formatCurrency(result.interest)}</p>
               </div>
             </div>
             
             <div className="mb-10">
-              <div className="h-80 w-full bg-slate-50 p-4 rounded-xl border border-slate-100">
-                <h4 className="text-sm font-bold text-slate-500 mb-4 uppercase">Evolução do Patrimônio</h4>
+              <div className="h-80 w-full bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                <h4 className="text-sm font-bold text-slate-500 dark:text-slate-400 mb-4 uppercase">Evolução do Patrimônio</h4>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={result.schedule}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="period" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis fontSize={12} tickFormatter={(val) => `R$${(val/1000).toFixed(0)}k`} tickLine={false} axisLine={false} />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#475569" strokeOpacity={0.2} />
+                    <XAxis dataKey="period" fontSize={12} tickLine={false} axisLine={false} tick={{fill: '#94a3b8'}} />
+                    <YAxis fontSize={12} tickFormatter={(val) => `R$${(val/1000).toFixed(0)}k`} tickLine={false} axisLine={false} tick={{fill: '#94a3b8'}} />
                     <Tooltip 
                       formatter={(val: number) => MathUtils.formatCurrency(val)} 
-                      cursor={{fill: '#f1f5f9'}}
+                      cursor={{fill: 'rgba(148, 163, 184, 0.1)'}}
                       contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                     />
                     <Legend />
@@ -172,11 +171,11 @@ export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
 
             {/* TABLE SECTION */}
             <div>
-              <h4 className="text-lg font-bold text-investor-800 mb-4 text-center">Tabela Detalhada</h4>
-              <div className="border border-slate-200 rounded-lg overflow-hidden">
+              <h4 className="text-lg font-bold text-investor-800 dark:text-investor-400 mb-4 text-center">Tabela Detalhada</h4>
+              <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
                 <div className="max-h-[500px] overflow-y-auto">
                   <table className="w-full text-sm text-center">
-                    <thead className="bg-slate-100 text-slate-700 sticky top-0 font-semibold">
+                    <thead className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 sticky top-0 font-semibold">
                       <tr>
                         <th className="py-3 px-4">Período (Mês)</th>
                         <th className="py-3 px-4">Juros (Mês)</th>
@@ -185,14 +184,14 @@ export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
                         <th className="py-3 px-4">Total Acumulado</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-700 bg-white dark:bg-slate-800">
                       {result.schedule.map((row: any) => (
-                        <tr key={row.period} className="hover:bg-slate-50 transition-colors">
-                          <td className="py-3 px-4 text-slate-500">{row.period}</td>
-                          <td className="py-3 px-4 text-slate-600">{MathUtils.formatCurrency(row.monthlyInterest)}</td>
-                          <td className="py-3 px-4 text-slate-600">{MathUtils.formatCurrency(row.invested)}</td>
-                          <td className="py-3 px-4 text-investor-600">{MathUtils.formatCurrency(row.interest)}</td>
-                          <td className="py-3 px-4 font-bold text-slate-800">{MathUtils.formatCurrency(row.total)}</td>
+                        <tr key={row.period} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                          <td className="py-3 px-4 text-slate-500 dark:text-slate-400">{row.period}</td>
+                          <td className="py-3 px-4 text-slate-600 dark:text-slate-300">{MathUtils.formatCurrency(row.monthlyInterest)}</td>
+                          <td className="py-3 px-4 text-slate-600 dark:text-slate-300">{MathUtils.formatCurrency(row.invested)}</td>
+                          <td className="py-3 px-4 text-investor-600 dark:text-investor-400">{MathUtils.formatCurrency(row.interest)}</td>
+                          <td className="py-3 px-4 font-bold text-slate-800 dark:text-slate-100">{MathUtils.formatCurrency(row.total)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -203,7 +202,7 @@ export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
 
           </div>
         ) : (
-          <div className="h-40 flex items-center justify-center text-slate-400">
+          <div className="h-40 flex items-center justify-center text-slate-400 dark:text-slate-500">
             Preencha os dados acima e clique em Calcular.
           </div>
         )}
@@ -215,11 +214,11 @@ export const SimpleInterestCalc: React.FC<Props> = ({ onBack }) => {
 // 2. Juros Compostos - Advanced Layout
 export const CompoundInterestCalc: React.FC<Props> = ({ onBack }) => {
   const [values, setValues] = useState({ 
-    principal: '10000', 
-    monthly: '600', 
-    rate: '8',
+    principal: '300', 
+    monthly: '300', 
+    rate: '6',
     rateType: 'yearly' as 'yearly' | 'monthly',
-    period: '30',
+    period: '1',
     periodType: 'years' as 'years' | 'months'
   });
   
@@ -238,11 +237,11 @@ export const CompoundInterestCalc: React.FC<Props> = ({ onBack }) => {
 
   const reset = () => {
     setValues({
-      principal: '10000', 
-      monthly: '600', 
-      rate: '8',
+      principal: '300', 
+      monthly: '300', 
+      rate: '6',
       rateType: 'yearly',
-      period: '30',
+      period: '1',
       periodType: 'years'
     });
     setResult(null);
@@ -251,13 +250,13 @@ export const CompoundInterestCalc: React.FC<Props> = ({ onBack }) => {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-5">
       <div className="mb-6 flex items-center gap-4">
-        <button onClick={onBack} className="p-2 rounded-full bg-white text-slate-600 shadow-sm border border-slate-200 hover:bg-slate-50 transition-colors">
+        <button onClick={onBack} className="p-2 rounded-full bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
           <ArrowLeft size={20} />
         </button>
-        <h2 className="text-2xl font-bold text-slate-800">Simulador de Juros Compostos</h2>
+        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Simulador de Juros Compostos</h2>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg border border-slate-100 p-6 lg:p-8">
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 p-6 lg:p-8 transition-colors duration-300">
         {/* INPUT SECTION */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Input 
@@ -281,7 +280,7 @@ export const CompoundInterestCalc: React.FC<Props> = ({ onBack }) => {
             </div>
             <div className="w-1/3 pt-7">
               <select 
-                className="w-full px-3 py-2.5 rounded-lg border border-slate-300 bg-white"
+                className="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100"
                 value={values.rateType}
                 onChange={e => setValues({...values, rateType: e.target.value as any})}
               >
@@ -301,7 +300,7 @@ export const CompoundInterestCalc: React.FC<Props> = ({ onBack }) => {
             </div>
             <div className="w-1/3 pt-7">
               <select 
-                className="w-full px-3 py-2.5 rounded-lg border border-slate-300 bg-white"
+                className="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100"
                 value={values.periodType}
                 onChange={e => setValues({...values, periodType: e.target.value as any})}
               >
@@ -312,7 +311,7 @@ export const CompoundInterestCalc: React.FC<Props> = ({ onBack }) => {
           </div>
         </div>
 
-        <div className="flex justify-between items-center border-b border-slate-100 pb-8 mb-4">
+        <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-8 mb-4">
           <button 
             onClick={calculate}
             className="bg-investor-800 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-investor-900 transition-all active:scale-95"
@@ -320,7 +319,7 @@ export const CompoundInterestCalc: React.FC<Props> = ({ onBack }) => {
             Calcular
           </button>
           <div className="flex gap-4 text-sm font-medium">
-             <button onClick={reset} className="text-slate-400 hover:text-slate-600">Limpar</button>
+             <button onClick={reset} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">Limpar</button>
           </div>
         </div>
 
@@ -329,38 +328,38 @@ export const CompoundInterestCalc: React.FC<Props> = ({ onBack }) => {
         {/* RESULTS SECTION */}
         {result && (
           <div className="animate-in fade-in duration-700">
-            <h3 className="text-lg font-bold text-investor-800 mb-4">Resultado</h3>
+            <h3 className="text-lg font-bold text-investor-800 dark:text-investor-400 mb-4">Resultado</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
               {/* Main Highlight Card */}
-              <div className="bg-investor-800 text-white p-6 rounded-lg shadow-md text-center">
+              <div className="bg-investor-800 dark:bg-investor-900 text-white p-6 rounded-lg shadow-md text-center">
                 <p className="text-xs uppercase font-bold opacity-80 mb-2">Valor total final</p>
                 <p className="text-3xl font-bold">{MathUtils.formatCurrency(result.total)}</p>
               </div>
               
-              <div className="bg-white border border-slate-200 p-6 rounded-lg shadow-sm text-center">
-                 <p className="text-xs uppercase font-bold text-slate-500 mb-2">Valor total investido</p>
-                 <p className="text-2xl font-bold text-slate-800">{MathUtils.formatCurrency(result.invested)}</p>
+              <div className="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 p-6 rounded-lg shadow-sm text-center">
+                 <p className="text-xs uppercase font-bold text-slate-500 dark:text-slate-400 mb-2">Valor total investido</p>
+                 <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">{MathUtils.formatCurrency(result.invested)}</p>
               </div>
 
-              <div className="bg-white border border-slate-200 p-6 rounded-lg shadow-sm text-center">
-                 <p className="text-xs uppercase font-bold text-slate-500 mb-2">Total em juros</p>
-                 <p className="text-2xl font-bold text-investor-600">{MathUtils.formatCurrency(result.interest)}</p>
+              <div className="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 p-6 rounded-lg shadow-sm text-center">
+                 <p className="text-xs uppercase font-bold text-slate-500 dark:text-slate-400 mb-2">Total em juros</p>
+                 <p className="text-2xl font-bold text-investor-600 dark:text-investor-400">{MathUtils.formatCurrency(result.interest)}</p>
               </div>
             </div>
 
             {/* CHART SECTION */}
             <div className="mb-10">
-              <div className="h-96 w-full bg-slate-50 p-4 rounded-xl border border-slate-100">
-                <h4 className="text-sm font-bold text-slate-500 mb-4 uppercase">Evolução do Patrimônio</h4>
+              <div className="h-96 w-full bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                <h4 className="text-sm font-bold text-slate-500 dark:text-slate-400 mb-4 uppercase">Evolução do Patrimônio</h4>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={result.schedule} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="period" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis fontSize={12} tickFormatter={(val) => `${(val/1000).toFixed(0)}k`} tickLine={false} axisLine={false} />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#475569" strokeOpacity={0.2} />
+                    <XAxis dataKey="period" fontSize={12} tickLine={false} axisLine={false} tick={{fill: '#94a3b8'}} />
+                    <YAxis fontSize={12} tickFormatter={(val) => `${(val/1000).toFixed(0)}k`} tickLine={false} axisLine={false} tick={{fill: '#94a3b8'}} />
                     <Tooltip 
                       formatter={(val: number) => MathUtils.formatCurrency(val)} 
-                      cursor={{fill: '#f1f5f9'}}
+                      cursor={{fill: 'rgba(148, 163, 184, 0.1)'}}
                       contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                     />
                     <Legend />
@@ -373,11 +372,11 @@ export const CompoundInterestCalc: React.FC<Props> = ({ onBack }) => {
 
             {/* TABLE SECTION */}
             <div>
-              <h4 className="text-lg font-bold text-investor-800 mb-4 text-center">Tabela Detalhada</h4>
-              <div className="border border-slate-200 rounded-lg overflow-hidden">
+              <h4 className="text-lg font-bold text-investor-800 dark:text-investor-400 mb-4 text-center">Tabela Detalhada</h4>
+              <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
                 <div className="max-h-[500px] overflow-y-auto">
                   <table className="w-full text-sm text-center">
-                    <thead className="bg-slate-100 text-slate-700 sticky top-0 font-semibold">
+                    <thead className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 sticky top-0 font-semibold">
                       <tr>
                         <th className="py-3 px-4">Mês</th>
                         <th className="py-3 px-4">Juros</th>
@@ -386,14 +385,14 @@ export const CompoundInterestCalc: React.FC<Props> = ({ onBack }) => {
                         <th className="py-3 px-4">Total Acumulado</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-700 bg-white dark:bg-slate-800">
                       {result.schedule.map((row: any) => (
-                        <tr key={row.period} className="hover:bg-slate-50 transition-colors">
-                          <td className="py-3 px-4 text-slate-500">{row.period}</td>
-                          <td className="py-3 px-4 text-slate-600">{MathUtils.formatCurrency(row.monthlyInterest)}</td>
-                          <td className="py-3 px-4 text-slate-600">{MathUtils.formatCurrency(row.invested)}</td>
-                          <td className="py-3 px-4 text-investor-600">{MathUtils.formatCurrency(row.totalInterest)}</td>
-                          <td className="py-3 px-4 font-bold text-slate-800">{MathUtils.formatCurrency(row.total)}</td>
+                        <tr key={row.period} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                          <td className="py-3 px-4 text-slate-500 dark:text-slate-400">{row.period}</td>
+                          <td className="py-3 px-4 text-slate-600 dark:text-slate-300">{MathUtils.formatCurrency(row.monthlyInterest)}</td>
+                          <td className="py-3 px-4 text-slate-600 dark:text-slate-300">{MathUtils.formatCurrency(row.invested)}</td>
+                          <td className="py-3 px-4 text-investor-600 dark:text-investor-400">{MathUtils.formatCurrency(row.totalInterest)}</td>
+                          <td className="py-3 px-4 font-bold text-slate-800 dark:text-slate-100">{MathUtils.formatCurrency(row.total)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -433,7 +432,7 @@ export const FVCalc: React.FC<Props> = ({ onBack }) => {
         <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="Valor Futuro" value={MathUtils.formatCurrency(result)} highlight />
-        ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
+        ) : <div className="text-slate-400 dark:text-slate-500 text-center mt-10">Aguardando cálculo...</div>}
       </ContentArea>
     </CalculatorLayout>
   );
@@ -464,7 +463,7 @@ export const PVCalc: React.FC<Props> = ({ onBack }) => {
         <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="Valor Presente Necessário" value={MathUtils.formatCurrency(result)} highlight />
-        ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
+        ) : <div className="text-slate-400 dark:text-slate-500 text-center mt-10">Aguardando cálculo...</div>}
       </ContentArea>
     </CalculatorLayout>
   );
@@ -495,7 +494,7 @@ export const CAGRCalc: React.FC<Props> = ({ onBack }) => {
         <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="CAGR (Crescimento Anual)" value={MathUtils.formatPercent(result)} highlight />
-        ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
+        ) : <div className="text-slate-400 dark:text-slate-500 text-center mt-10">Aguardando cálculo...</div>}
       </ContentArea>
     </CalculatorLayout>
   );
@@ -524,7 +523,7 @@ export const ROICalc: React.FC<Props> = ({ onBack }) => {
         <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="ROI Total" value={MathUtils.formatPercent(result)} highlight />
-        ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
+        ) : <div className="text-slate-400 dark:text-slate-500 text-center mt-10">Aguardando cálculo...</div>}
       </ContentArea>
     </CalculatorLayout>
   );
@@ -555,7 +554,7 @@ export const InflationCalc: React.FC<Props> = ({ onBack }) => {
         <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="Valor Corrigido" value={MathUtils.formatCurrency(result)} highlight />
-        ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
+        ) : <div className="text-slate-400 dark:text-slate-500 text-center mt-10">Aguardando cálculo...</div>}
       </ContentArea>
     </CalculatorLayout>
   );
@@ -586,7 +585,7 @@ export const DepreciationCalc: React.FC<Props> = ({ onBack }) => {
         <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="Depreciação Anual" value={MathUtils.formatCurrency(result)} highlight />
-        ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
+        ) : <div className="text-slate-400 dark:text-slate-500 text-center mt-10">Aguardando cálculo...</div>}
       </ContentArea>
     </CalculatorLayout>
   );

@@ -293,6 +293,13 @@ export const calcSAC = (loan: number, rate: number, periods: number): Amortizati
   };
 };
 
+// Wrapper for Comparison
+export const calcAmortizationComparison = (loan: number, rate: number, periods: number) => {
+  const price = calcPrice(loan, rate, periods);
+  const sac = calcSAC(loan, rate, periods);
+  return { price, sac };
+};
+
 // 13. Inflation Adjustment
 export const calcInflation = (value: number, rate: number, periods: number) => {
   return value * Math.pow(1 + rate / 100, periods);

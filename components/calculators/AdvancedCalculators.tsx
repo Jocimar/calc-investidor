@@ -33,7 +33,7 @@ export const AnnuityFVCalc: React.FC<Props> = ({ onBack }) => {
         <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="Valor Acumulado (FV)" value={MathUtils.formatCurrency(result)} highlight />
-        ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
+        ) : <div className="text-slate-400 dark:text-slate-500 text-center mt-10">Aguardando cálculo...</div>}
       </ContentArea>
     </CalculatorLayout>
   );
@@ -64,7 +64,7 @@ export const AnnuityPVCalc: React.FC<Props> = ({ onBack }) => {
         <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="Valor Presente da Série" value={MathUtils.formatCurrency(result)} highlight />
-        ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
+        ) : <div className="text-slate-400 dark:text-slate-500 text-center mt-10">Aguardando cálculo...</div>}
       </ContentArea>
     </CalculatorLayout>
   );
@@ -86,14 +86,14 @@ export const NPVCalc: React.FC<Props> = ({ onBack }) => {
       <Sidebar>
         <Input label="Taxa de Desconto / TMA (%)" type="number" value={rate} onChange={e => setRate(e.target.value)} />
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-semibold text-slate-700">Fluxos de Caixa</label>
+          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Fluxos de Caixa</label>
           <textarea
             value={flows}
             onChange={e => setFlows(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-investor-500 shadow-sm h-32 bg-white text-slate-800"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-investor-500 shadow-sm h-32 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 dark:placeholder-slate-400"
             placeholder="-1000, 200, 300..."
           />
-          <p className="text-xs text-slate-500">Separe os valores por vírgula. Comece com o investimento (negativo).</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Separe os valores por vírgula. Comece com o investimento (negativo).</p>
         </div>
         <Button onClick={calculate}>Calcular VPL</Button>
       </Sidebar>
@@ -106,26 +106,26 @@ export const NPVCalc: React.FC<Props> = ({ onBack }) => {
               value={MathUtils.formatCurrency(result.npv)} 
               highlight 
             />
-            <div className={`mt-2 font-bold ${result.npv >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+            <div className={`mt-2 font-bold ${result.npv >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
               {result.npv >= 0 ? 'Investimento Viável' : 'Investimento Inviável'}
             </div>
 
-            <div className="h-64 w-full mt-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
-               <h4 className="text-sm font-bold text-slate-500 mb-2 uppercase">Fluxo de Caixa (Nominal vs Descontado)</h4>
+            <div className="h-64 w-full mt-6 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+               <h4 className="text-sm font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase">Fluxo de Caixa (Nominal vs Descontado)</h4>
                <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={result.chartData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <ReferenceLine y={0} stroke="#000" />
-                  <XAxis dataKey="period" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#475569" strokeOpacity={0.2} />
+                  <ReferenceLine y={0} stroke="#94a3b8" />
+                  <XAxis dataKey="period" tick={{fill: '#94a3b8'}} />
                   <YAxis hide />
-                  <Tooltip formatter={(val: number) => MathUtils.formatCurrency(val)} />
+                  <Tooltip formatter={(val: number) => MathUtils.formatCurrency(val)} cursor={{fill: 'rgba(148, 163, 184, 0.1)'}} />
                   <Bar dataKey="flow" name="Nominal" fill="#94a3b8" />
                   <Bar dataKey="discounted" name="Descontado (VP)" fill="#3b82f6" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </>
-        ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
+        ) : <div className="text-slate-400 dark:text-slate-500 text-center mt-10">Aguardando cálculo...</div>}
       </ContentArea>
     </CalculatorLayout>
   );
@@ -145,14 +145,14 @@ export const IRRCalc: React.FC<Props> = ({ onBack }) => {
     <CalculatorLayout title="TIR / IRR (Taxa Interna de Retorno)" onBack={onBack}>
       <Sidebar>
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-semibold text-slate-700">Fluxos de Caixa</label>
+          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Fluxos de Caixa</label>
           <textarea
             value={flows}
             onChange={e => setFlows(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-investor-500 shadow-sm h-32 bg-white text-slate-800"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-investor-500 shadow-sm h-32 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 dark:placeholder-slate-400"
             placeholder="-1000, 200, 300..."
           />
-           <p className="text-xs text-slate-500">Separe os valores por vírgula. Comece com o investimento (negativo).</p>
+           <p className="text-xs text-slate-500 dark:text-slate-400">Separe os valores por vírgula. Comece com o investimento (negativo).</p>
         </div>
         <Button onClick={calculate}>Calcular TIR</Button>
       </Sidebar>
@@ -160,7 +160,7 @@ export const IRRCalc: React.FC<Props> = ({ onBack }) => {
         <ResponsiveAdBlock />
         {result !== null ? (
           <ResultBox label="Taxa Interna de Retorno" value={MathUtils.formatPercent(result)} highlight />
-        ) : <div className="text-slate-400 text-center mt-10">Aguardando cálculo...</div>}
+        ) : <div className="text-slate-400 dark:text-slate-500 text-center mt-10">Aguardando cálculo...</div>}
       </ContentArea>
     </CalculatorLayout>
   );
