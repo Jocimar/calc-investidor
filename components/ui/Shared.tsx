@@ -46,34 +46,53 @@ export const AdPlaceholder: React.FC<AdProps> = ({
   const adRef = useRef<HTMLModElement>(null);
 
   useEffect(() => {
-    // Check if element is visible and has width before requesting ad
-    // This prevents "No slot size for availableWidth=0" error
     const attemptLoad = () => {
-       if (adRef.current && adRef.current.offsetWidth > 0) {
-          try {
-            // @ts-ignore
-            (window.adsbygoogle = window.adsbygoogle || []).push({});
-          } catch (e) {
-            console.error("AdSense Error:", e);
-          }
+       // 1. Check if ref exists and is connected to DOM
+       if (!adRef.current || !adRef.current.isConnected) return;
+       
+       // 2. Check if already populated (AdSense adds data-ad-status attribute when filled)
+       // This prevents "All ins elements... already have ads" error in React StrictMode
+       if (adRef.current.getAttribute('data-ad-status')) return;
+
+       // 3. Check for visibility/width to prevent "availableWidth=0" error
+       // We check if either width or height is 0 (hidden)
+       if (adRef.current.offsetWidth === 0 && adRef.current.offsetHeight === 0) return;
+
+       try {
+         // @ts-ignore
+         (window.adsbygoogle = window.adsbygoogle || []).push({});
+       } catch (e) {
+         // Log but don't crash app
+         console.error("AdSense Push Error:", e);
        }
     };
 
-    // Add a delay to ensure the container has a calculated width
-    const timer = setTimeout(attemptLoad, 500);
+    // Delay to allow layout to settle
+    const timer = setTimeout(() => {
+        // Use rAF to ensure we try to load when browser is ready to paint
+        requestAnimationFrame(attemptLoad);
+    }, 1000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [slot]); // Re-run if slot changes
+
+  // Prepare props dynamically to avoid rendering empty attributes
+  const adProps: any = {
+    className: "adsbygoogle",
+    style: style,
+    "data-ad-client": "ca-pub-2924325515288163",
+    "data-ad-slot": slot,
+    "data-full-width-responsive": responsive
+  };
+
+  // Only add format if it's truthy. Fixed size ads often require omitting this or setting specific values.
+  if (format) {
+    adProps["data-ad-format"] = format;
+  }
 
   return (
     <div className={`flex items-center justify-center bg-slate-50 dark:bg-slate-900 overflow-hidden ${className}`}>
-      <ins ref={adRef}
-           className="adsbygoogle"
-           style={style}
-           data-ad-client="ca-pub-2924325515288163"
-           data-ad-slot={slot}
-           data-ad-format={format}
-           data-full-width-responsive={responsive}></ins>
+      <ins ref={adRef} {...adProps}></ins>
     </div>
   );
 };
@@ -108,7 +127,7 @@ export const ResponsiveAdBlock: React.FC = () => {
                 key="desktop-ad"
                 slot="9775572766" 
                 style={{ display: 'inline-block', width: '728px', height: '90px' }}
-                format=""
+                format="" // Pass empty string to let AdPlaceholder handle omission
                 responsive="false"
              />
         </div>
