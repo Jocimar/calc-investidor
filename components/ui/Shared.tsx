@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 
 interface CardProps {
@@ -28,11 +28,41 @@ export const Card: React.FC<CardProps> = ({ title, description, onClick, icon })
   );
 };
 
-export const AdPlaceholder: React.FC<{ className?: string }> = ({ className }) => (
-  <div className={`bg-slate-50 border-2 border-dashed border-slate-200 rounded-lg flex items-center justify-center text-slate-400 p-4 transition-all hover:bg-slate-100 hover:border-slate-300 select-none ${className}`}>
-    <span className="text-xs uppercase tracking-widest font-bold">Publicidade</span>
-  </div>
-);
+interface AdProps {
+  className?: string;
+  slot?: string;
+  format?: string;
+  responsive?: string;
+  style?: React.CSSProperties;
+}
+
+export const AdPlaceholder: React.FC<AdProps> = ({ 
+  className, 
+  slot = "3124751542", // Default generic slot
+  format = "auto",
+  responsive = "true",
+  style = { display: 'block', width: '100%' }
+}) => {
+  useEffect(() => {
+    try {
+      // @ts-ignore
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      console.error("AdSense Error:", e);
+    }
+  }, []);
+
+  return (
+    <div className={`flex items-center justify-center bg-slate-50 overflow-hidden ${className}`}>
+      <ins className="adsbygoogle"
+           style={style}
+           data-ad-client="ca-pub-2924325515288163"
+           data-ad-slot={slot}
+           data-ad-format={format}
+           data-full-width-responsive={responsive}></ins>
+    </div>
+  );
+};
 
 export const CalculatorLayout: React.FC<{ 
   title: string; 
@@ -67,14 +97,14 @@ export const Sidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =
     </div>
     
     <div className="mt-10 pt-8 border-t border-slate-200">
-      <AdPlaceholder className="w-full h-[280px]" />
+      <AdPlaceholder className="w-full min-h-[280px]" />
     </div>
   </div>
 );
 
 export const ContentArea: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="w-full lg:w-2/3 p-6 lg:p-8 flex flex-col gap-6 bg-white">
-    <AdPlaceholder className="w-full h-[100px]" />
+    <AdPlaceholder className="w-full min-h-[100px]" />
     {children}
   </div>
 );

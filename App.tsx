@@ -72,8 +72,14 @@ const App: React.FC = () => {
             Selecione uma calculadora abaixo para começar seu planejamento financeiro.
           </p>
           
-          <div className="max-w-4xl mx-auto">
-            <AdPlaceholder className="h-[120px] shadow-sm" />
+          <div className="flex justify-center mb-8">
+            <AdPlaceholder 
+              className="min-h-[90px] shadow-sm" 
+              slot="9775572766" 
+              style={{ display: 'inline-block', width: '728px', height: '90px' }}
+              format=""
+              responsive="false"
+            />
           </div>
       </div>
 
